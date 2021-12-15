@@ -24,7 +24,7 @@ modules <- extractPkgName(moduleGitRepos)
 
 if (cloneRepos) {
   if (!all(dir.exists(file.path(getPaths()$modulePath, modules))))
-    stop("You will need to clone the repositories first")
+    stop("You will need to clone and checkout the correct repositories first; see moduleGitRepos")
 } else {
   getModule(moduleGitRepos, overwrite = TRUE)
 }
