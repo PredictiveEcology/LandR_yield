@@ -1,8 +1,10 @@
 ## install/load required packages
+Rversion <- gsub(".+(4..).+", "\\1", R.version.string)
+if (!dir.exists("R")) dir.create(file.path("R", Rversion)); .libPaths(file.path("R", Rversion), include.site = FALSE)
 if (!require("Require")) {install.packages("Require"); require("Require")}
 Require("PredictiveEcology/SpaDES.install")
 installSpaDES()
-Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9005)", "data.table", "sf"))
+Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9005)", "data.table", "sf", "stars"))
 
 ## environment setup -- all the functions below rely on knowing where modules
 ## are located via this command
@@ -11,14 +13,21 @@ setPaths(cachePath = "cache",
          modulePath = "modules",
          outputPath = "outputs")
 
+cloneRepos <- FALSE
 ## modules
 moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.11)"
                     , 'PredictiveEcology/Biomass_borealDataPrep@development (>= 1.5.4)'
                     , "PredictiveEcology/Biomass_speciesParameters@EliotTweaks (>= 0.0.13)"
                     , 'PredictiveEcology/Biomass_yieldTables (>= 0.0.7)'
 )
-getModule(moduleGitRepos, overwrite = TRUE)
 modules <- extractPkgName(moduleGitRepos)
+
+if (cloneRepos) {
+  if (!all(dir.exists(file.path(getPaths()$modulePath, modules))))
+    stop("You will need to clone the repositories first")
+} else {
+  getModule(moduleGitRepos, overwrite = TRUE)
+}
 
 ## packages that are required by modules
 makeSureAllPackagesInstalled()
@@ -71,9 +80,10 @@ SA_ERIntersect <- function(x, studyArea) {
 
 studyArea <- Cache(prepInputs, url = "https://drive.google.com/file/d/1h7gK44g64dwcoqhij24F2K54hs5e35Ci/view?usp=sharing",
                    destinationPath = Paths$inputPath,
-                   fun = fixRTM)
+                   fun = fixRTM, overwrite = TRUE)
 studyAreaER <- Cache(prepInputs, url =  "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/region/ecoregion_shp.zip",
-                     destinationPath = Paths$inputPath, fun = quote(SA_ERIntersect(x = targetFilePath, studyArea)))
+                     destinationPath = Paths$inputPath, fun = quote(SA_ERIntersect(x = targetFilePath, studyArea)),
+                     overwrite = TRUE)
 
 speciesToUse <- c("Abie_las", "Betu_pap", "Pice_gla", "Pice_mar", "Pinu_con",
                   "Popu_tre", "Pice_eng")
@@ -113,7 +123,6 @@ simOut <- simInitAndSpades(
   times = times,
   params = parameters,
   modules = modules,
-  outputs = outputs,
   objects = objects,
   debug = 1, loadOrder = modules
 )
