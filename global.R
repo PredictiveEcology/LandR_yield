@@ -1,6 +1,7 @@
 ## install/load required packages
 Rversion <- gsub(".+(4..).+", "\\1", R.version.string)
-if (!dir.exists("R")) dir.create(file.path("R", Rversion)); .libPaths(file.path("R", Rversion), include.site = FALSE)
+rlib <- file.path("R", Rversion)
+if (!dir.exists(rlib)) dir.create(rlib); .libPaths(rlib, include.site = FALSE)
 if (!require("Require")) {install.packages("Require"); require("Require")}
 Require("PredictiveEcology/SpaDES.install")
 installSpaDES()
