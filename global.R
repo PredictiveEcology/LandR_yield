@@ -18,7 +18,7 @@ cloneRepos <- FALSE
 moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.11)"
                     , 'PredictiveEcology/Biomass_borealDataPrep@development (>= 1.5.4)'
                     , "PredictiveEcology/Biomass_speciesParameters@EliotTweaks (>= 0.0.13)"
-                    , 'PredictiveEcology/Biomass_yieldTables (>= 0.0.7)'
+                    , 'PredictiveEcology/Biomass_yieldTables (>= 0.0.8)'
 )
 modules <- extractPkgName(moduleGitRepos)
 
