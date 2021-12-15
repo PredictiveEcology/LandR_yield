@@ -6,26 +6,28 @@ Require("PredictiveEcology/SpaDES.install")
 installSpaDES()
 Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9005)", "data.table", "sf", "stars"))
 
-## environment setup -- all the functions below rely on knowing where modules
-## are located via this command
-cloneRepos <- FALSE
-setPaths(cachePath = "cache",
-         inputPath = "inputs",
-         modulePath = if (cloneRepos) "modulesCloned" else "modules",
-         outputPath = "outputs")
-
 ## modules
-moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.11)"
+moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.12)"
                     , 'PredictiveEcology/Biomass_borealDataPrep@development (>= 1.5.4)'
                     , "PredictiveEcology/Biomass_speciesParameters@EliotTweaks (>= 0.0.13)"
                     , 'PredictiveEcology/Biomass_yieldTables (>= 0.0.8)'
 )
 modules <- extractPkgName(moduleGitRepos)
 
-if (cloneRepos) {
-  if (!all(dir.exists(file.path(getPaths()$modulePath, modules))))
-    stop("You will need to clone and checkout the correct repositories first; see moduleGitRepos")
-} else {
+# A user may be using this as a git repository with submodules
+clonedRepoModulePath <- "modulesCloned"
+usingClonedSubmodules <-
+  if (all(dir.exists(file.path(clonedRepoModulePath, modules)))) TRUE else FALSE
+
+
+## environment setup -- all the functions below rely on knowing where modules
+## are located via this command
+setPaths(cachePath = "cache",
+         inputPath = "inputs",
+         modulePath = if (usingClonedSubmodules) clonedRepoModulePath else "modules", # keep the cloned/uncloned separate
+         outputPath = "outputs")
+
+if (!usingClonedSubmodules) { # if the user is not using submodules, then download the modules directly
   getModule(moduleGitRepos, overwrite = TRUE)
 }
 
