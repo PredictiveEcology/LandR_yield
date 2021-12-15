@@ -8,12 +8,12 @@ Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9005)", "data.tab
 
 ## environment setup -- all the functions below rely on knowing where modules
 ## are located via this command
+cloneRepos <- FALSE
 setPaths(cachePath = "cache",
          inputPath = "inputs",
-         modulePath = "modules",
+         modulePath = if (cloneRepos) "modulesCloned" else "modules",
          outputPath = "outputs")
 
-cloneRepos <- FALSE
 ## modules
 moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.11)"
                     , 'PredictiveEcology/Biomass_borealDataPrep@development (>= 1.5.4)'
