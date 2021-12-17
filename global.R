@@ -5,7 +5,7 @@ if (!dir.exists(rlib)) dir.create(rlib); .libPaths(rlib, include.site = FALSE)
 if (!require("Require")) {install.packages("Require"); require("Require")}
 Require("PredictiveEcology/SpaDES.install")
 installSpaDES()
-Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9005)", "data.table", "sf", "stars"))
+Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9006)", "data.table", "sf", "stars"))
 
 ## modules
 moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.12)"
