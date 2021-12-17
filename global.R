@@ -76,7 +76,7 @@ fixRTM <- function(x) {
 SA_ERIntersect <- function(x, studyArea) {
   x <- sf::st_read(x)
   sa_sf <- sf::st_as_sf(studyArea)
-  ecoregions <- sf::st_transform(x, st_crs(sa_sf))
+  ecoregions <- sf::st_transform(x, sf::st_crs(sa_sf))
   studyAreaER <- sf::st_intersects(ecoregions, sa_sf, sparse = FALSE)
   sf::as_Spatial(ecoregions[studyAreaER,])
 }
