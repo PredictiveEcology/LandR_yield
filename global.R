@@ -115,10 +115,13 @@ parameters <- list(
     runExperiment = TRUE,
     factorialSize = "medium"),
   Biomass_speciesParameters = list(
-    .plots = "pdf",
+    .plots = "png",
     standAgesForFitting = c(0, 125),
     .useCache = c(".inputObjects", "init"),
-    speciesFittingApproach = "focal")
+    speciesFittingApproach = "focal"),
+  Biomass_yieldTables = list(
+    .plots = "png",
+    .useCache = "generateData")
 )
 
 # All the action is here
