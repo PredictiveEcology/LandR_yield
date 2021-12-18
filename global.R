@@ -1,11 +1,15 @@
 ## install/load required packages
 Rversion <- gsub(".+(4..).+", "\\1", R.version.string)
 rlib <- file.path("R", Rversion)
-if (!dir.exists(rlib)) dir.create(rlib); .libPaths(rlib, include.site = FALSE)
+# options(repos = c(CRAN = "https://cloud.r-project.org"))
+if (!dir.exists(rlib)) dir.create(rlib, recursive = TRUE); .libPaths(rlib, include.site = FALSE)
+
+### In this section, only load the minimum of packages (Require, SpaDES.install) so all packages can be installed with
+#    correct version numbering. If we load a package too early and it is an older version that what may be required by
+#    a module, then we get an inconsistency
 if (!require("Require")) {install.packages("Require"); require("Require")}
 Require("PredictiveEcology/SpaDES.install")
 installSpaDES()
-Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9006)", "data.table", "sf", "stars"))
 
 ## modules
 moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.12)"
@@ -19,21 +23,28 @@ modules <- extractPkgName(moduleGitRepos)
 clonedRepoModulePath <- "modulesCloned"
 usingClonedSubmodules <-
   if (all(dir.exists(file.path(clonedRepoModulePath, modules)))) TRUE else FALSE
+modulePath <- if (usingClonedSubmodules) clonedRepoModulePath else "modules"
 
+
+if (!usingClonedSubmodules) { # if the user is not using submodules, then download the modules directly
+  getModule(moduleGitRepos, overwrite = TRUE, modulePath = modulePath)
+}
+
+## packages that are required by modules
+makeSureAllPackagesInstalled()
+
+#### Up to here, SpaDES.core is not needed so any packages that modules need can be updated with the previous function
+
+# Now load packages that are needed for this global.R
+Require(c("SpaDES.core", "data.table", "sf", "stars"))
 
 ## environment setup -- all the functions below rely on knowing where modules
 ## are located via this command
 setPaths(cachePath = "cache",
          inputPath = "inputs",
-         modulePath = if (usingClonedSubmodules) clonedRepoModulePath else "modules", # keep the cloned/uncloned separate
+         modulePath = modulePath, # keep the cloned/uncloned separate
          outputPath = "outputs")
 
-if (!usingClonedSubmodules) { # if the user is not using submodules, then download the modules directly
-  getModule(moduleGitRepos, overwrite = TRUE)
-}
-
-## packages that are required by modules
-makeSureAllPackagesInstalled()
 
 ## Module documentation -- please go to these pages to read about each module
 ##  In some cases, there will be important defaults that a user should be aware of
