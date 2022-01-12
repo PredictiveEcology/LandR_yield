@@ -31,7 +31,7 @@ if (!usingClonedSubmodules) { # if the user is not using submodules, then downlo
 }
 
 ## packages that are required by modules
-makeSureAllPackagesInstalled()
+makeSureAllPackagesInstalled(modulePath = modulePath)
 
 #### Up to here, SpaDES.core is not needed so any packages that modules need can be updated with the previous function
 
