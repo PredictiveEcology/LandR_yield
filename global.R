@@ -36,7 +36,8 @@ makeSureAllPackagesInstalled(modulePath = modulePath)
 #### Up to here, SpaDES.core is not needed so any packages that modules need can be updated with the previous function
 
 # Now load packages that are needed for this global.R
-Require(c("SpaDES.core", "data.table", "sf", "stars"))
+Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9014)",
+          "data.table", "sf", "stars"))
 
 ## environment setup -- all the functions below rely on knowing where modules
 ## are located via this command
