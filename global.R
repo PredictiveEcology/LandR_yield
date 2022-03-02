@@ -120,7 +120,8 @@ parameters <- list(
     , ".studyAreaName" = "RIA"
   ),
   Biomass_borealDataPrep = list(
-    .studyAreaName = "RIA"
+    .studyAreaName = "RIA",
+    subsetDataBiomassModel = 50
   ),
   Biomass_speciesFactorial = list(
     .plots = NULL, #"pdf",
