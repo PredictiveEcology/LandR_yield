@@ -7,9 +7,12 @@ if (!dir.exists(rlib)) dir.create(rlib, recursive = TRUE); .libPaths(rlib, inclu
 ### In this section, only load the minimum of packages (Require, SpaDES.install) so all packages can be installed with
 #    correct version numbering. If we load a package too early and it is an older version that what may be required by
 #    a module, then we get an inconsistency
-if (!require("Require")) {install.packages("Require"); require("Require")}
-Require("PredictiveEcology/SpaDES.install")
-installSpaDES()
+if (!require("remotes")) {
+  install.packages("remotes")
+}
+remotes::install_github("PredictiveEcology/Require@development")
+library(Require)
+Require("PredictiveEcology/SpaDES.project@transition", require = FALSE)
 
 ## modules
 moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.12)"
@@ -31,13 +34,21 @@ if (!usingClonedSubmodules) { # if the user is not using submodules, then downlo
 }
 
 ## packages that are required by modules
-makeSureAllPackagesInstalled(modulePath = modulePath)
+packagesNeededInModules <- SpaDES.project::packagesInModules(modulePath = modulePath)
+# the modules point to GitHub versions of SpaDES.tools and SpaDES.core;
+#    there is no need because CRAN versions are newer;
+#    plus need RTools to install SpaDES.tools from GitHub. So, over
+Require(c("SpaDES.core (>=1.1.0)", "SpaDES.tools (>= 1.0.0)",
+          "googledrive", 'RCurl', 'XML',
+          unlist(unname(packagesNeededInModules))),
+        require = "SpaDES.core", # call `require` only on this package (same as `library`)
+        verbose = 1)
 
 #### Up to here, SpaDES.core is not needed so any packages that modules need can be updated with the previous function
 
 # Now load packages that are needed for this global.R
-Require(c("PredictiveEcology/SpaDES.core@development (>= 1.0.9.9014)",
-          "data.table", "sf", "stars"))
+#Require(c("SpaDES.core"))#,
+#          "data.table", "sf", "stars"))
 
 ## environment setup -- all the functions below rely on knowing where modules
 ## are located via this command
@@ -59,6 +70,8 @@ setPaths(cachePath = "cache",
 ## simulation initialization. These may not be appropriate start and end times for one
 ## or more of the modules, e.g., they may only be defined with calendar dates
 
+options(spades.moduleCodeChecks = FALSE,
+        spades.recoveryMode = FALSE)
 if (any(Sys.info()[["user"]] %in% c("emcintir", "elmci1"))) {
   Require("googledrive")
   options(
@@ -107,6 +120,9 @@ sppEquiv <- LandR::sppEquivalencies_CA[LandR::sppEquivalencies_CA[[speciesNameCo
 
 # Assign a colour convention for graphics for each species
 sppColorVect <- LandR::sppColors(sppEquiv, speciesNameConvention, palette = "Set1")
+sppNames <- names(sppColorVect)
+sppColorVect <- RColorBrewer::brewer.pal(name = "Set1", 8)
+names(sppColorVect) <- c(sppNames, "Mixed")
 
 objects <- list(studyArea = studyArea, studyAreaLarge = studyArea,
                 studyAreaANPP = studyAreaER,
