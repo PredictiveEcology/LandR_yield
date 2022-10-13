@@ -1,7 +1,8 @@
 ## install/load required packages
+
 Rversion <- gsub(".+(4..).+", "\\1", R.version.string)
 rlib <- file.path("R", Rversion)
-# options(repos = c(CRAN = "https://cloud.r-project.org"))
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 if (!dir.exists(rlib)) dir.create(rlib, recursive = TRUE); .libPaths(rlib, include.site = FALSE)
 
 ### In this section, only load the minimum of packages (Require, SpaDES.install) so all packages can be installed with
@@ -39,7 +40,7 @@ packagesNeededInModules <- SpaDES.project::packagesInModules(modulePath = module
 #    there is no need because CRAN versions are newer;
 #    plus need RTools to install SpaDES.tools from GitHub. So, over
 Require(c("SpaDES.core (>=1.1.0)", "SpaDES.tools (>= 1.0.0)",
-          "googledrive", 'RCurl', 'XML',
+          "googledrive", 'RCurl', 'XML', "stars",
           unlist(unname(packagesNeededInModules))),
         require = "SpaDES.core", # call `require` only on this package (same as `library`)
         verbose = 1)
