@@ -1,25 +1,20 @@
-## install/load required packages
-
-Rversion <- gsub(".+(4..).+", "\\1", R.version.string)
-rlib <- file.path("R", Rversion)
-options(repos = c(CRAN = "https://cloud.r-project.org"))
-if (!dir.exists(rlib)) dir.create(rlib, recursive = TRUE); .libPaths(rlib, include.site = FALSE)
 
 ### In this section, only load the minimum of packages (Require, SpaDES.install) so all packages can be installed with
 #    correct version numbering. If we load a package too early and it is an older version that what may be required by
 #    a module, then we get an inconsistency
-if (!require("remotes")) {
-  install.packages("remotes")
+# This repository is ours and it has the latest versions of our packages
+repos <- c("predictiveecology.r-universe.dev", getOption("repos"))
+# Need the latest version
+if (tryCatch(packageVersion("SpaDES.project") < "0.1.1", error = function(x) TRUE)) {
+  install.packages(c("SpaDES.project", "Require", "SpaDES.core"), repos = repos)
+  Require::Require("stringr")
 }
-remotes::install_github("PredictiveEcology/Require@development")
 library(Require)
-Require("PredictiveEcology/SpaDES.project@transition", require = FALSE)
-
 ## modules
-moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial (>= 0.0.12)"
+moduleGitRepos <- c("PredictiveEcology/Biomass_speciesFactorial@development (>= 0.0.12)"
                     , 'PredictiveEcology/Biomass_borealDataPrep@development (>= 1.5.4)'
                     , "PredictiveEcology/Biomass_speciesParameters@development (>= 1.0.0)"
-                    , 'PredictiveEcology/Biomass_yieldTables (>= 0.0.8)'
+                    , 'PredictiveEcology/Biomass_yieldTables@main'
 )
 modules <- extractPkgName(moduleGitRepos)
 
@@ -31,7 +26,7 @@ modulePath <- if (usingClonedSubmodules) clonedRepoModulePath else "modules"
 
 
 if (!usingClonedSubmodules) { # if the user is not using submodules, then download the modules directly
-  getModule(moduleGitRepos, overwrite = TRUE, modulePath = modulePath)
+  SpaDES.project::getModule(moduleGitRepos, overwrite = TRUE, modulePath = modulePath)
 }
 
 ## packages that are required by modules
@@ -73,17 +68,17 @@ setPaths(cachePath = "cache",
 
 options(spades.moduleCodeChecks = FALSE,
         spades.recoveryMode = FALSE)
-if (any(Sys.info()[["user"]] %in% c("emcintir", "elmci1"))) {
-  Require("googledrive")
-  options(
-    gargle_oauth_cache = ".secrets",
-    gargle_oauth_email = "eliotmcintire@gmail.com"
-  )
-}
+# if (any(Sys.info()[["user"]] %in% c("emcintir", "elmci1"))) {
+#   Require("googledrive")
+#   options(
+#     gargle_oauth_cache = ".secrets",
+#     gargle_oauth_email = "eliotmcintire@gmail.com"
+#   )
+# }
 
 ## OBJECTS
 fixRTM <- function(x) {
-  x <- raster::raster(x)
+  x <- terra::rast(x)
   x[!is.na(x[])] <- 1
   RIArtm3 <- terra::rast(x)
   aaa <- terra::focal(RIArtm3, fun = "sum", na.rm = TRUE, w = 5)
@@ -97,6 +92,7 @@ fixRTM <- function(x) {
   sa <- sf::st_as_sf(stars::st_as_stars(RIArtm2), as_points = FALSE, merge = TRUE)
   sa <- sf::st_buffer(sa, 0)
   sa <- sf::as_Spatial(sa)
+  sa <- terra::vect(sa)
   return(sa)
 }
 SA_ERIntersect <- function(x, studyArea) {
@@ -104,10 +100,10 @@ SA_ERIntersect <- function(x, studyArea) {
   sa_sf <- sf::st_as_sf(studyArea)
   ecoregions <- sf::st_transform(x, sf::st_crs(sa_sf))
   studyAreaER <- sf::st_intersects(ecoregions, sa_sf, sparse = FALSE)
-  sf::as_Spatial(ecoregions[studyAreaER,])
+  terra::vect((ecoregions[studyAreaER,]))
 }
 
-studyArea <- Cache(prepInputs, url = "https://drive.google.com/file/d/1h7gK44g64dwcoqhij24F2K54hs5e35Ci/view?usp=sharing",
+studyArea <- Cache(prepInputs, url = "https://drive.google.com/file/d/1zUyFH8k6Ef4c_GiWMInKbwAl6m6gvLJW",
                    destinationPath = Paths$inputPath,
                    fun = fixRTM, overwrite = TRUE)
 studyAreaER <- Cache(prepInputs, url =  "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/region/ecoregion_shp.zip",
@@ -150,6 +146,7 @@ parameters <- list(
     .useCache = c(".inputObjects", "init"),
     speciesFittingApproach = "focal"),
   Biomass_yieldTables = list(
+    moduleNameAndBranch = "PredictiveEcology/Biomass_core@development (>= 1.3.9)",
     .plots = "png",
     .useCache = "generateData")
 )
