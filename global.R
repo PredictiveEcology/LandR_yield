@@ -122,7 +122,6 @@ sppColorVect <- RColorBrewer::brewer.pal(name = "Set1", 8)
 names(sppColorVect) <- c(sppNames, "Mixed")
 
 objects <- list(studyArea = studyArea, studyAreaLarge = studyArea,
-                studyAreaANPP = studyAreaER,
                 sppEquiv = sppEquiv,
                 sppColorVect = sppColorVect)
 times <- list(start = 0, end = 350)
