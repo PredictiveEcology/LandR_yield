@@ -25,9 +25,9 @@ usingClonedSubmodules <-
 modulePath <- if (usingClonedSubmodules) clonedRepoModulePath else "modules"
 
 
-if (!usingClonedSubmodules) { # if the user is not using submodules, then download the modules directly
+#if (!usingClonedSubmodules) { # if the user is not using submodules, then download the modules directly
   SpaDES.project::getModule(moduleGitRepos, overwrite = TRUE, modulePath = modulePath)
-}
+#}
 
 ## packages that are required by modules
 packagesNeededInModules <- SpaDES.project::packagesInModules(modulePath = modulePath)
