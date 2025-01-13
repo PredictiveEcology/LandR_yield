@@ -42,8 +42,7 @@ out <- SpaDES.project::setupProject(
       .useCache = "generateData")
   ),
   packages = c("googledrive", 'RCurl', 'XML', "stars"),
-  # DC 13-01-2025: Will need to figure out why useGit = T does not work
-  useGit = F,
+  useGit = T,
   functions = "R/fixRTM.R",
   studyArea = {
     reproducible::prepInputs(url = "https://drive.google.com/file/d/1zUyFH8k6Ef4c_GiWMInKbwAl6m6gvLJW",
