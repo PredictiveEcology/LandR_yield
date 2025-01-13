@@ -14,9 +14,9 @@ out <- SpaDES.project::setupProject(
   modules = c("PredictiveEcology/Biomass_speciesFactorial@development",
               "PredictiveEcology/Biomass_borealDataPrep@development",
               "PredictiveEcology/Biomass_speciesParameters@development",
-              "PredictiveEcology/Biomass_yieldTables@main"
+              "DominiqueCaron/Biomass_yieldTables@dom-experimenting"
   ),
-  times <- list(start = 0, end = 350),
+  times = list(start = 0, end = 350),
   params = list(
     .globals = list(
       sppEquivCol = LandR::equivalentNameColumn(
@@ -42,7 +42,8 @@ out <- SpaDES.project::setupProject(
       .useCache = "generateData")
   ),
   packages = c("googledrive", 'RCurl', 'XML', "stars"),
-  useGit = TRUE,
+  # DC 13-01-2025: Will need to figure out why useGit = T does not work
+  useGit = F,
   functions = "R/fixRTM.R",
   studyArea = {
     reproducible::prepInputs(url = "https://drive.google.com/file/d/1zUyFH8k6Ef4c_GiWMInKbwAl6m6gvLJW",
@@ -72,4 +73,4 @@ out <- SpaDES.project::setupProject(
 
 out$loadOrder <- unlist(out$modules)
 
-simOut <- simInitAndSpades(out)
+simOut <- SpaDES.core::simInitAndSpades2(out)
