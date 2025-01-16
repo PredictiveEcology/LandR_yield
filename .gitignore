@@ -27,7 +27,6 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 .secrets
-R/
 inputs/
 modules/
 outputs/
