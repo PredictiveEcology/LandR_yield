@@ -44,7 +44,7 @@ out <- SpaDES.project::setupProject(
     )
   ),
   packages = c("googledrive", 'RCurl', 'XML', "stars"),
-  useGit = F,
+  useGit = T,
   functions = "R/getRIA.R",
   # Study area is RIA
   studyArea = {
@@ -54,18 +54,14 @@ out <- SpaDES.project::setupProject(
                              overwrite = TRUE)
   },
   studyAreaLarge = studyArea,
-  # DC 15-01-2025: Make speciesNameConvention an object to clean a bit.
+  speciesToUse = c("Abie_las", "Betu_pap", "Pice_gla", "Pice_mar", "Pinu_con",
+                   "Popu_tre", "Pice_eng"),
+  speciesNameConvention = LandR::equivalentNameColumn(speciesToUse, LandR::sppEquivalencies_CA),
   sppEquiv = {
-    speciesToUse <- c("Abie_las", "Betu_pap", "Pice_gla", "Pice_mar", "Pinu_con",
-                      "Popu_tre", "Pice_eng")
-    speciesNameConvention <- LandR::equivalentNameColumn(speciesToUse, LandR::sppEquivalencies_CA)
     sppEquiv <- LandR::sppEquivalencies_CA[LandR::sppEquivalencies_CA[[speciesNameConvention]] %in% speciesToUse,]
     sppEquiv
   },
   sppColorVect = {
-    speciesToUse <- c("Abie_las", "Betu_pap", "Pice_gla", "Pice_mar", "Pinu_con",
-                      "Popu_tre", "Pice_eng")
-    speciesNameConvention <- LandR::equivalentNameColumn(speciesToUse, LandR::sppEquivalencies_CA)
     sppColorVect <- LandR::sppColors(sppEquiv, speciesNameConvention, palette = "Set1")
     sppNames <- names(sppColorVect)
     sppColorVect <- RColorBrewer::brewer.pal(name = "Set1", 8)
