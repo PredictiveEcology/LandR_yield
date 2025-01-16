@@ -1,0 +1,6 @@
+getRIA <- function(x) {
+  x <- terra::vect(x)
+  ria <- x[x$TSA_NUMBER %in% c('08', '16', '24', '40', '41'),]
+  ria <- terra::aggregate(ria)
+  return(ria)
+}
