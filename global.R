@@ -15,6 +15,7 @@ out <- SpaDES.project::setupProject(
               "PredictiveEcology/Biomass_yieldTables@main"
   ),
   #DC 15-01-2025: Why 350?
+  #DC 16-01-2025: Can we remove? I don't see where it's used...
   times = list(start = 0, end = 350),
   params = list(
     .globals = list(
