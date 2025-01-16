@@ -1,4 +1,4 @@
-# Description
+# Get the minimal amount of packages
 repos <- c("predictiveecology.r-universe.dev", getOption("repos"))
 if (!require("SpaDES.project")){
   Require::Install(c("SpaDES.project", "SpaDES.core", "reproducible"), repos = repos, dependencies = TRUE)
@@ -12,8 +12,9 @@ out <- SpaDES.project::setupProject(
   modules = c("PredictiveEcology/Biomass_speciesFactorial@development",
               "PredictiveEcology/Biomass_borealDataPrep@development",
               "PredictiveEcology/Biomass_speciesParameters@development",
-              "DominiqueCaron/Biomass_yieldTables@main"
+              "PredictiveEcology/Biomass_yieldTables@main"
               ),
+  #DC 15-01-2025: Why 350?
   times = list(start = 0, end = 350),
   params = list(
     .globals = list(
@@ -44,7 +45,9 @@ out <- SpaDES.project::setupProject(
     ),
   packages = c("googledrive", 'RCurl', 'XML', "stars"),
   useGit = T,
+  # DC 15-01-2025: What does fixRTM? Is it necessary?
   functions = "R/fixRTM.R",
+  # DC 15-01-2025: Make sure this is RIA
   studyArea = {
     reproducible::prepInputs(url = "https://drive.google.com/file/d/1zUyFH8k6Ef4c_GiWMInKbwAl6m6gvLJW",
                              destinationPath = "inputs",
@@ -52,6 +55,7 @@ out <- SpaDES.project::setupProject(
                              overwrite = TRUE)
   },
   studyAreaLarge = studyArea,
+  # DC 15-01-2025: Make speciesNameConvention an object to clean a bit.
   sppEquiv = {
     speciesToUse <- c("Abie_las", "Betu_pap", "Pice_gla", "Pice_mar", "Pinu_con",
                       "Popu_tre", "Pice_eng")
