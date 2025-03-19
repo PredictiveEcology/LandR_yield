@@ -10,3 +10,15 @@
 [submodule "modulesCloned/Biomass_speciesParameters"]
 	path = modulesCloned/Biomass_speciesParameters
 	url = git@github.com:PredictiveEcology/Biomass_speciesParameters.git
+[submodule "modules/Biomass_speciesFactorial"]
+	path = modules/Biomass_speciesFactorial
+	url = https://github.com/PredictiveEcology/Biomass_speciesFactorial
+[submodule "modules/Biomass_borealDataPrep"]
+	path = modules/Biomass_borealDataPrep
+	url = https://github.com/PredictiveEcology/Biomass_borealDataPrep
+[submodule "modules/Biomass_speciesParameters"]
+	path = modules/Biomass_speciesParameters
+	url = https://github.com/PredictiveEcology/Biomass_speciesParameters
+[submodule "modules/Biomass_yieldTables"]
+	path = modules/Biomass_yieldTables
+	url = https://github.com/DominiqueCaron/Biomass_yieldTables
