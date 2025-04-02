@@ -1,3 +1,9 @@
+###
+###
+# This script creates yield tables using LandR and PSP species trait parametrization.
+###
+###
+
 # Get the minimal amount of packages
 repos <- c("predictiveecology.r-universe.dev", getOption("repos"))
 if (!require("SpaDES.project")){
@@ -8,14 +14,14 @@ out <- SpaDES.project::setupProject(
   Restart = TRUE,
   paths = list(projectPath = getwd(),
                inputPath = "inputs",
-               outputPath = "outputs",
+               outputPath = "outputs/LandRyieldTables",
                cachePath = "cache"),
   options = options(spades.moduleCodeChecks = FALSE,
                     spades.recoveryMode = FALSE),
   modules = c("PredictiveEcology/Biomass_speciesFactorial@development",
               "PredictiveEcology/Biomass_borealDataPrep@development",
               "PredictiveEcology/Biomass_speciesParameters@development",
-              "DominiqueCaron/Biomass_yieldTables@reorganisation"
+              "PredictiveEcology/Biomass_yieldTables@main"
   ),
   params = list(
     .globals = list(
@@ -60,10 +66,11 @@ out <- SpaDES.project::setupProject(
   },
   studyAreaLarge = studyArea,
   rasterToMatch = {
-    targetCRS <- terra::crs(studyArea)
-    rtm <- terra::rast(studyArea, res = c(250, 250), crs = targetCRS)
+    sa <- terra::vect(studyArea)
+    targetCRS <- terra::crs(sa)
+    rtm <- terra::rast(sa, res = c(250, 250), crs = targetCRS)
     rtm[] <- 1
-    rtm <- terra::mask(rtm, studyArea)
+    rtm <- terra::mask(rtm, sa)
     rtm
   },
   sppEquiv = {
